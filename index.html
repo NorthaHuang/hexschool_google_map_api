@@ -1,12 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Hexschool - Google Map API</title>
 </head>
+
 <body>
-  
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <script>
+      let map;
+      const center =  {lat: 22.781486,lng:120.378046}
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center,
+          zoom: 10,
+          styles: [
+            {
+              "featureType": "all",
+              "elementType": "labels.text.fill",
+              "stylers": [{
+                "color": "#ffffff"
+              }]
+            },
+            {
+              "featureType": "all",
+              "elementType": "labels.text.stroke",
+              "stylers": [{
+                  "color": "#000000"
+                },
+                {
+                  "lightness": 13
+                }
+              ]
+            },
+            {
+              "featureType": "administrative",
+              "elementType": "geometry.fill",
+              "stylers": [{
+                "color": "#000000"
+              }]
+            },
+            {
+              "featureType": "administrative",
+              "elementType": "geometry.stroke",
+              "stylers": [{
+                  "color": "#144b53"
+                },
+                {
+                  "lightness": 14
+                },
+                {
+                  "weight": 1.4
+                }
+              ]
+            },
+            {
+              "featureType": "landscape",
+              "elementType": "all",
+              "stylers": [{
+                "color": "#08304b"
+              }]
+            },
+            {
+              "featureType": "poi",
+              "elementType": "geometry",
+              "stylers": [{
+                  "color": "#0c4152"
+                },
+                {
+                  "lightness": 5
+                }
+              ]
+            },
+            {
+              "featureType": "road.highway",
+              "elementType": "geometry.fill",
+              "stylers": [{
+                "color": "#000000"
+              }]
+            },
+            {
+              "featureType": "road.highway",
+              "elementType": "geometry.stroke",
+              "stylers": [{
+                  "color": "#0b434f"
+                },
+                {
+                  "lightness": 25
+                }
+              ]
+            },
+            {
+              "featureType": "road.arterial",
+              "elementType": "geometry.fill",
+              "stylers": [{
+                "color": "#000000"
+              }]
+            },
+            {
+              "featureType": "road.arterial",
+              "elementType": "geometry.stroke",
+              "stylers": [{
+                  "color": "#0b3d51"
+                },
+                {
+                  "lightness": 16
+                }
+              ]
+            },
+            {
+              "featureType": "road.local",
+              "elementType": "geometry",
+              "stylers": [{
+                "color": "#000000"
+              }]
+            },
+            {
+              "featureType": "transit",
+              "elementType": "all",
+              "stylers": [{
+                "color": "#146474"
+              }]
+            },
+            {
+              "featureType": "water",
+              "elementType": "all",
+              "stylers": [{
+                "color": "#021019"
+              }]
+            }
+          ]
+        });
+
+        const openDataUrl = 'https://data.kcg.gov.tw/api/action/datastore_search?resource_id=92290ee5-6e61-456f-80c0-249eae2fcc97';
+        const xhr = new XMLHttpRequest();
+        xhr.open('get', openDataUrl, true);
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.onload = function() { printMap(JSON.parse(xhr.response).result.records) };
+        xhr.send();
+      }
+
+      function printMap(response) {
+        alert('黃色羽毛 = 免費參觀!');
+
+        const icon = './images/feather-filled-shape.png';
+        const markerData = [];
+        for (let i=0; i<response.length; i++) {
+          markerData[i] = {
+            position: {
+              lat: parseFloat(response[i].Py),
+              lng: parseFloat(response[i].Px)
+            },
+            title: response[i].Name,
+            map
+          }
+
+          if (response[i].Ticketinfo === '免費參觀') {
+            markerData[i].icon = icon;
+          }
+        }
+
+        for (let i = 0; i < markerData.length; i++) {
+          new google.maps.Marker(markerData[i]);
+        }
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0IF5-3GDi4u7Zs-wqCSBB7YNFWHoIjqU&callback=initMap"
+      async defer></script>
+  </body>
+
+  </html>
 </body>
+
 </html>
